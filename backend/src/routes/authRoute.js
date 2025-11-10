@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { signUp, signIn } from "../controller/authController";
-import { refreshToken } from "../middleware/tokenVerification.js";
+import { signUp, signIn, refreshToken } from "../controller/authController";
 
 const router = Router();
 

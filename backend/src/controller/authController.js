@@ -10,7 +10,7 @@ dotenv.config();
 
 export const signUp = async (req, res) => {
   // 1. Lấy dữ liệu từ req.body
-  const { username, password } = req.body;
+  const { password } = req.body;
 
   if (!password) {
     return res.status(400).json({ message: "Password is required" });

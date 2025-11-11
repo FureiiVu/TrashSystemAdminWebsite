@@ -19,4 +19,5 @@ const tradeHistorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const TradeHistory = mongoose.model("TradeHistory", tradeHistorySchema);
+const TradeHistory = mongoose.model("TradeHistory", tradeHistorySchema);
+export default TradeHistory;

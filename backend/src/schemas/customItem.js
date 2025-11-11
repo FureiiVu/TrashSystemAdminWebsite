@@ -19,4 +19,5 @@ const customItemSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const CustomItem = mongoose.model("CustomItem", customItemSchema);
+const CustomItem = mongoose.model("CustomItem", customItemSchema);
+export default CustomItem;

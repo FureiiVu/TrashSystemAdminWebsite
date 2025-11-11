@@ -9,4 +9,5 @@ const defaultItemSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const DefaultItem = mongoose.model("DefaultItem", defaultItemSchema);
+const DefaultItem = mongoose.model("DefaultItem", defaultItemSchema);
+export default DefaultItem;

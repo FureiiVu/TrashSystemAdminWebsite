@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import User from "../schemas/user.js";
 import cloudinary from "../lib/cloudinary.js";
 
 // Hàm upload file lên Cloudinary

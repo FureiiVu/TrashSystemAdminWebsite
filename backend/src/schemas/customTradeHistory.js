@@ -19,7 +19,8 @@ const customTradeHistorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const CustomTradeHistory = mongoose.model(
+const CustomTradeHistory = mongoose.model(
   "CustomTradeHistory",
   customTradeHistorySchema
 );
+export default CustomTradeHistory;

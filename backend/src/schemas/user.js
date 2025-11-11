@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
     birthDate: { type: Date, required: true },
     male: { type: Boolean, required: true },
     points: { type: Number, required: true, default: 0 },
+    iconUrl: { type: String, required: true },
   },
   { timestamps: true }
 );

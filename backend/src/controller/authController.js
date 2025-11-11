@@ -3,38 +3,44 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
 import UserRole from "../enum/userRole.js";
+import { createUser } from "./userController.js";
+import { generateToken } from "../services/tokenService.js";
 
 dotenv.config();
 
-import { generateToken } from "../services/tokenService.js";
-
-export const signUp = (req, res) => {
+export const signUp = async (req, res) => {
+  // 1. Lấy dữ liệu từ req.body
   const { username, password } = req.body;
 
-  // Hash password
+  if (!password) {
+    return res.status(400).json({ message: "Password is required" });
+  }
+
+  // 2. Hash password
   const hashedPassword = bcrypt.hashSync(password, 10);
 
-  // Save user to database (call create user logic later)
-  const newUser = { username, password: hashedPassword };
-  console.log("User registered:", newUser);
+  // 3. Tạo user mới
+  await createUser(req, res, hashedPassword);
 
+  // 4. Trả về phản hồi thành công
   res.json({ message: "User registered successfully" });
 };
 
 export const signIn = async (req, res) => {
+  // 1. Lấy dữ liệu từ req.body
   const { username, password } = req.body;
 
-  // Find user in database (call find user logic later)
+  // 2. Tìm user trong cơ sở dữ liệu
   const userFromDB = await findUserByUsername(username); // Chưa viết hàm này
 
   if (!userFromDB) {
     return res.status(404).json({ error: "User has not been registered" });
   }
 
-  // Check password
+  // 3. Kiểm tra mật khẩu
   const isValidPassword = await bcrypt.compare(password, userFromDB.password);
 
-  // If password is valid, generate token, else return error
+  // 4. Nếu đúng, tạo và trả về token
   if (isValidPassword) {
     const { accessToken, refreshToken } = generateToken(userFromDB.id);
 
@@ -42,12 +48,11 @@ export const signIn = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       sameSite: "strict",
-      secure: false, // Set to true if using HTTPS
+      secure: process.env.NODE_ENV === "production",
     });
 
     res.json({
       accessToken,
-      user: { id: userFromDB.id, username: userFromDB.username },
       message: "Sign in successful",
     });
   } else {
@@ -56,9 +61,12 @@ export const signIn = async (req, res) => {
 };
 
 export const refreshToken = (req, res) => {
+  // 1. Lấy refreshToken từ cookie
   const refreshToken = req.cookies.refreshToken;
+
   if (!refreshToken) return res.status(401).json({ error: "No refresh token" });
 
+  // 2. Xác thực refreshToken, tạo và trả về accessToken mới
   try {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
     const newAccessToken = jwt.sign(
